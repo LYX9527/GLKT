@@ -24,4 +24,9 @@
         sort,join_date,create_time,
         update_time,is_deleted
     </sql>
+    <select id="lookAllByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from teacher
+    </select>
 </mapper>

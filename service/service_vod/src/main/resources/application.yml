@@ -21,3 +21,7 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# page helper
+page helper:
+  helper-dialect: mysql
+  reasonable: true

@@ -18,6 +18,11 @@ public class TeacherQueryVo {
 	@ApiModelProperty(value = "入驻时间")
 	private String joinDateEnd;
 
+	@ApiModelProperty(value = "第几页")
+	private Integer page = 1;
+
+	@ApiModelProperty(value = "每页条数")
+	private Integer size = 10;
 
 }
 

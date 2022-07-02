@@ -3,6 +3,8 @@ package com.orange.vod.service;
 import com.orange.ggkt.model.vod.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author EDY
 * @description 针对表【teacher(讲师)】的数据库操作Service
