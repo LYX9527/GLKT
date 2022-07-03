@@ -12,7 +12,6 @@ import com.orange.vod.service.TeacherService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +57,7 @@ public class TeacherController {
     // 分页查询讲师
     @PostMapping("/findAllPage")
     @ApiOperation(value = "分页查询讲师", notes = "分页查询讲师")
-    public AjaxResult findByPage(@ApiParam(name = "teacherQueryVo", value = "讲师筛选信息",example = "")@RequestBody TeacherQueryVo teacherQueryVo) {
+    public AjaxResult findByPage(@ApiParam(name = "teacherQueryVo", value = "讲师筛选信息",example = "") TeacherQueryVo teacherQueryVo) {
         Integer page = teacherQueryVo.getPage();
         Integer size = teacherQueryVo.getSize();
         Page<Teacher> pageDetail = new Page<>(page, size);

@@ -1,11 +1,9 @@
 <script setup lang="ts">
-const router = useRouter();
-onMounted(() => {
-  router.push('/login');
-});
+
 </script>
 
 <template>
+  欢迎登录
 </template>
 
 <style lang="scss">
