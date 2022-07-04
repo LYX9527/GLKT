@@ -23,12 +23,12 @@
         <!--数据载体-->
         <dependency>
             <groupId>com.orange</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>service_utils</artifactId>
             <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.orange</groupId>
-            <artifactId>service_utils</artifactId>
+            <artifactId>model</artifactId>
             <version>0.0.1</version>
         </dependency>
         <!--web 需要启动项目-->
