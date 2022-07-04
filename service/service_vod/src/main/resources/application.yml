@@ -57,9 +57,9 @@ page helper:
 tencent:
   cos:
     file:
-      region: ap-shanghai
-      secretId: AKIDtb6PULxKTM1SghYEmG1by7ey2sTWO3p6
-      secretKey: ITZZYUQJ4c092RddOuFOJ1lOo24A8sPO
-      bucketName: glkt-avatar-1252438937
+      region: xxxxxxxxxxxx
+      secretId: xxxxxxxxxxxx
+      secretKey: xxxxxxxxxxxx
+      bucketName: xxxxxxxxxxxx
 
 

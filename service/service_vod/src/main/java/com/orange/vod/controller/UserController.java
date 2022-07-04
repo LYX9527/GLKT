@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.orange.ajaxresult.AjaxResult;
 import com.orange.ajaxresult.Constants;
 import com.orange.md5Utils.Md5Utils;
-import com.orange.vod.domain.Tempuser;
+import com.orange.vod.domain.TempUser;
 import com.orange.vod.domain.vo.LoginVo;
 import com.orange.vod.domain.vo.RegisterVo;
 import com.orange.vod.redis.RedisCache;
-import com.orange.vod.service.TempuserService;
+import com.orange.vod.service.TempUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,7 +30,7 @@ public class UserController {
     @Autowired
     private RedisCache redisCache;
     @Autowired
-    TempuserService tempuserService;
+    TempUserService tempuserService;
 
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/login")
@@ -48,7 +48,7 @@ public class UserController {
         if (!cacheObject.toString().equalsIgnoreCase(code)) {
             return AjaxResult.error(402,"验证码错误！");
         }
-        Tempuser tempuser = tempuserService.getOne(new QueryWrapper<Tempuser>().eq("name", user));
+        TempUser tempuser = tempuserService.getOne(new QueryWrapper<TempUser>().eq("name", user));
         if (tempuser == null) {
             return AjaxResult.error(201, "用户名不存在！");
         } else {
@@ -63,7 +63,7 @@ public class UserController {
     @ApiOperation(value = "获取用户信息", notes = "获取用户信息")
     @GetMapping("/info")
     public AjaxResult info(@ApiParam(name = "id", value = "ID", required = true, example = "1") Integer id) {
-        Tempuser userInfo = tempuserService.getById(id);
+        TempUser userInfo = tempuserService.getById(id);
         return AjaxResult.success(userInfo);
     }
 
@@ -88,18 +88,18 @@ public class UserController {
             return AjaxResult.error(402,"验证码错误！");
         }
         // 校验用户名是否存在
-        Tempuser tempuser = tempuserService.getOne(new LambdaQueryWrapper<Tempuser>().eq(Tempuser::getName, user));
+        TempUser tempuser = tempuserService.getOne(new LambdaQueryWrapper<TempUser>().eq(TempUser::getName, user));
         if (tempuser != null) {
             return AjaxResult.error(4001,"用户名已存在！");
         }
         // 注册用户
-        Tempuser tempuser1 = new Tempuser();
-        tempuser1.setName(user);
-        tempuser1.setPassword(Md5Utils.getMD5Str(password));
-        tempuser1.setNickName(nikeName);
-        tempuser1.setEmail(email);
-        tempuser1.setPhone(phone);
-        boolean save = tempuserService.save(tempuser1);
+        TempUser tempUser1 = new TempUser();
+        tempUser1.setName(user);
+        tempUser1.setPassword(Md5Utils.getMD5Str(password));
+        tempUser1.setNickName(nikeName);
+        tempUser1.setEmail(email);
+        tempUser1.setPhone(phone);
+        boolean save = tempuserService.save(tempUser1);
         if (save) {
             return AjaxResult.success("注册成功！");
         } else {
@@ -109,7 +109,7 @@ public class UserController {
 
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
     @PostMapping("/updateUser")
-    public AjaxResult updateAvatar(@RequestBody Tempuser tempuser) {
+    public AjaxResult updateAvatar(@RequestBody TempUser tempuser) {
         boolean update = tempuserService.updateById(tempuser);
         if (update) {
             return AjaxResult.success("修改成功！");
