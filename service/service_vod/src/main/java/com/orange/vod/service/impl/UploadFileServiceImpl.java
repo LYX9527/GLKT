@@ -32,13 +32,13 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public HashMap<String,String> uploadFile(MultipartFile file) {
 //        String secretId = ConstantReadYml.SECRET_ID;
-        String secretId = "AKIDtb6PULxKTM1SghYEmG1by7ey2sTWO3p6";
+        String secretId = "xxxxxxxxxxxxxxxxxx";
 //        String secretKey = ConstantReadYml.SECRET_KEY;
-        String secretKey = "ITZZYUQJ4c092RddOuFOJ1lOo24A8sPO";
+        String secretKey = "xxxxxxxxxxxxxxxxxx";
 //        String region = ConstantReadYml.REGION;
-        String regionStr = "ap-shanghai";
+        String regionStr = "xxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx";
 //        String bucketName = ConstantReadYml.BUCKET_NAME;
-        String bucketName = "glkt-avatar-1252438937";
+        String bucketName = "xxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx";
         System.out.println("secretId:" + secretId);
         System.out.println("secretKey:" + secretKey);
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
