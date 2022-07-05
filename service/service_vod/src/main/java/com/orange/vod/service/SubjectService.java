@@ -2,7 +2,9 @@ package com.orange.vod.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.orange.ggkt.model.vod.Subject;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -13,4 +15,8 @@ import java.util.List;
 public interface SubjectService extends IService<Subject> {
 
     List<Subject> getByParentId(Integer id);
+
+    void export(HttpServletResponse response);
+
+    void importData(MultipartFile file);
 }

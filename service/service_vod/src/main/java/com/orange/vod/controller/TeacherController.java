@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.orange.ajaxresult.AjaxResult;
 import com.orange.ajaxresult.StringUtils;
+import com.orange.errorcode.ErrorCode;
+import com.orange.exception.CustomException;
 import com.orange.ggkt.model.vod.Teacher;
 import com.orange.ggkt.vo.vod.TeacherQueryVo;
 import com.orange.vod.service.TeacherService;
@@ -15,7 +17,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,7 +46,8 @@ public class TeacherController {
     // 根据id删除讲师
     @GetMapping("/deleteById")
     @ApiOperation(value = "根据id删除讲师", notes = "根据id删除讲师")
-    public AjaxResult deleteById(@ApiParam(name = "id", value = "讲师ID", required = true,example = "1") Integer id) {
+    public AjaxResult deleteById(@ApiParam(name = "id", value = "讲师ID", required = true, example = "1") Integer id) {
+        if (id == null) throw new CustomException(ErrorCode.REQUEST_PARAM_MISSING, ErrorCode.REQUEST_PARAM_MISSING_MSG);
         boolean b = teacherService.removeById(id);
         if (b) {
             return AjaxResult.success();
@@ -57,7 +59,7 @@ public class TeacherController {
     // 分页查询讲师
     @PostMapping("/findAllPage")
     @ApiOperation(value = "分页查询讲师", notes = "分页查询讲师")
-    public AjaxResult findByPage(@ApiParam(name = "teacherQueryVo", value = "讲师筛选信息",example = "") TeacherQueryVo teacherQueryVo) {
+    public AjaxResult findByPage(@ApiParam(name = "teacherQueryVo", value = "讲师筛选信息", example = "") TeacherQueryVo teacherQueryVo) {
         Integer page = teacherQueryVo.getPage();
         Integer size = teacherQueryVo.getSize();
         Page<Teacher> pageDetail = new Page<>(page, size);
@@ -90,14 +92,16 @@ public class TeacherController {
 
     @GetMapping("/findById")
     @ApiOperation(value = "根据id查询讲师", notes = "根据id查询讲师")
-    public AjaxResult findById(@ApiParam(name = "id", value = "讲师ID", required = true,example = "1") Integer id) {
+    public AjaxResult findById(@ApiParam(name = "id", value = "讲师ID", required = true, example = "1") Integer id) {
+        if (id == null) throw new CustomException(ErrorCode.REQUEST_PARAM_MISSING, ErrorCode.REQUEST_PARAM_MISSING_MSG);
         Teacher teacher = teacherService.getById(id);
         return AjaxResult.success(teacher);
     }
 
     @PostMapping("/updateTeacher")
     @ApiOperation(value = "更新讲师", notes = "更新讲师")
-    public AjaxResult update(@ApiParam(name = "teacher", value = "讲师信息", required = true,example = "")@RequestBody Teacher teacher) {
+    public AjaxResult update(@ApiParam(name = "teacher", value = "讲师信息", required = true, example = "") @RequestBody Teacher teacher) {
+        if (teacher == null) throw new CustomException(ErrorCode.REQUEST_PARAM_MISSING, ErrorCode.REQUEST_PARAM_MISSING_MSG);
         boolean b = teacherService.updateById(teacher);
         if (b) {
             return AjaxResult.success();
@@ -108,7 +112,8 @@ public class TeacherController {
 
     @PostMapping("/addTeacher")
     @ApiOperation(value = "添加讲师", notes = "添加讲师")
-    public AjaxResult add(@ApiParam(name = "teacher", value = "讲师信息", required = true,example = "")@RequestBody Teacher teacher) {
+    public AjaxResult add(@ApiParam(name = "teacher", value = "讲师信息", required = true, example = "") @RequestBody Teacher teacher) {
+        if (teacher == null) throw new CustomException(ErrorCode.REQUEST_PARAM_MISSING, ErrorCode.REQUEST_PARAM_MISSING_MSG);
         boolean b = teacherService.save(teacher);
         if (b) {
             return AjaxResult.success();
@@ -119,7 +124,8 @@ public class TeacherController {
 
     @PostMapping("/deleteTeacher")
     @ApiOperation(value = "批量删除讲师", notes = "批量删除讲师")
-    public AjaxResult deleteTeacher(@ApiParam(name = "ids", value = "讲师ID集合", required = true,example = "1,2,3")@RequestBody List<Integer> ids) {
+    public AjaxResult deleteTeacher(@ApiParam(name = "ids", value = "讲师ID集合", required = true, example = "1,2,3") @RequestBody List<Integer> ids) {
+        if (ids == null) throw new CustomException(ErrorCode.REQUEST_PARAM_MISSING, ErrorCode.REQUEST_PARAM_MISSING_MSG);
         boolean b = teacherService.removeByIds(ids);
         if (b) {
             return AjaxResult.success();

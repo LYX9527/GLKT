@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.orange.ajaxresult.AjaxResult;
 import com.orange.ajaxresult.Constants;
+import com.orange.errorcode.ErrorCode;
+import com.orange.exception.CustomException;
 import com.orange.md5Utils.Md5Utils;
 import com.orange.vod.domain.TempUser;
 import com.orange.vod.domain.vo.LoginVo;
@@ -43,19 +45,19 @@ public class UserController {
         Object cacheObject = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (cacheObject == null) {
-            return AjaxResult.error(407,"验证码已过期！");
+            throw new CustomException(ErrorCode.VERIFY_CODE_EXPIRED,ErrorCode.VERIFY_CODE_EXPIRED_MSG);
         }
         if (!cacheObject.toString().equalsIgnoreCase(code)) {
-            return AjaxResult.error(402,"验证码错误！");
+            throw new CustomException(ErrorCode.VERIFY_CODE_ERROR,ErrorCode.VERIFY_CODE_ERROR_MSG);
         }
         TempUser tempuser = tempuserService.getOne(new QueryWrapper<TempUser>().eq("name", user));
         if (tempuser == null) {
-            return AjaxResult.error(201, "用户名不存在！");
+            throw new CustomException(ErrorCode.USER_NOT_EXIST, ErrorCode.USER_NOT_EXIST_MSG);
         } else {
             if (Md5Utils.getMD5Str(password).equals(tempuser.getPassword())) {
                 return AjaxResult.success("登陆成功！", tempuser.getId());
             } else {
-                return AjaxResult.error(4002,"密码错误！");
+                throw new CustomException(ErrorCode.USERNAME_OR_PASSWORD_ERROR, ErrorCode.USERNAME_OR_PASSWORD_ERROR_MSG);
             }
         }
     }
@@ -82,28 +84,28 @@ public class UserController {
         String TempCode = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (TempCode == null) {
-            return AjaxResult.error(407,"验证码已过期！");
+            return AjaxResult.error(ErrorCode.VERIFY_CODE_EXPIRED,ErrorCode.VERIFY_CODE_EXPIRED_MSG);
         }
         if (!TempCode.equalsIgnoreCase(code)) {
-            return AjaxResult.error(402,"验证码错误！");
+            return AjaxResult.error(ErrorCode.VERIFY_CODE_ERROR,ErrorCode.VERIFY_CODE_ERROR_MSG);
         }
         // 校验用户名是否存在
         TempUser tempuser = tempuserService.getOne(new LambdaQueryWrapper<TempUser>().eq(TempUser::getName, user));
         if (tempuser != null) {
-            return AjaxResult.error(4001,"用户名已存在！");
+            throw new CustomException(ErrorCode.USER_EXIST,ErrorCode.USER_EXIST_MSG);
         }
         // 注册用户
-        TempUser tempUser1 = new TempUser();
-        tempUser1.setName(user);
-        tempUser1.setPassword(Md5Utils.getMD5Str(password));
-        tempUser1.setNickName(nikeName);
-        tempUser1.setEmail(email);
-        tempUser1.setPhone(phone);
-        boolean save = tempuserService.save(tempUser1);
+        TempUser registerUser = new TempUser();
+        registerUser.setName(user);
+        registerUser.setPassword(Md5Utils.getMD5Str(password));
+        registerUser.setNickName(nikeName);
+        registerUser.setEmail(email);
+        registerUser.setPhone(phone);
+        boolean save = tempuserService.save(registerUser);
         if (save) {
             return AjaxResult.success("注册成功！");
         } else {
-            return AjaxResult.error("注册失败！请重试");
+            throw new CustomException(ErrorCode.REGISTER_FAIL,ErrorCode.REGISTER_FAIL_MSG);
         }
     }
 
@@ -114,7 +116,7 @@ public class UserController {
         if (update) {
             return AjaxResult.success("修改成功！");
         } else {
-            return AjaxResult.error("修改失败！请重试");
+            throw new CustomException(ErrorCode.UPDATE_FAIL,ErrorCode.UPDATE_FAIL_MSG);
         }
     }
 }
