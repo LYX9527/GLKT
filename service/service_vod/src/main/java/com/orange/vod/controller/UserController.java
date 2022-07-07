@@ -12,11 +12,14 @@ import com.orange.vod.domain.vo.LoginVo;
 import com.orange.vod.domain.vo.RegisterVo;
 import com.orange.vod.redis.RedisCache;
 import com.orange.vod.service.TempUserService;
+import com.orange.vod.service.impl.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 /**
  * @Package : com.orange.vod.controller
@@ -34,6 +37,9 @@ public class UserController {
     @Autowired
     TempUserService tempuserService;
 
+    @Autowired
+    TokenService tokenService;
+
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/login")
     public AjaxResult login(@RequestBody LoginVo loginVo) {
@@ -45,17 +51,21 @@ public class UserController {
         Object cacheObject = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (cacheObject == null) {
-            throw new CustomException(ErrorCode.VERIFY_CODE_EXPIRED,ErrorCode.VERIFY_CODE_EXPIRED_MSG);
+            throw new CustomException(ErrorCode.VERIFY_CODE_EXPIRED, ErrorCode.VERIFY_CODE_EXPIRED_MSG);
         }
         if (!cacheObject.toString().equalsIgnoreCase(code)) {
-            throw new CustomException(ErrorCode.VERIFY_CODE_ERROR,ErrorCode.VERIFY_CODE_ERROR_MSG);
+            throw new CustomException(ErrorCode.VERIFY_CODE_ERROR, ErrorCode.VERIFY_CODE_ERROR_MSG);
         }
         TempUser tempuser = tempuserService.getOne(new QueryWrapper<TempUser>().eq("name", user));
         if (tempuser == null) {
             throw new CustomException(ErrorCode.USER_NOT_EXIST, ErrorCode.USER_NOT_EXIST_MSG);
         } else {
             if (Md5Utils.getMD5Str(password).equals(tempuser.getPassword())) {
-                return AjaxResult.success("登陆成功！", tempuser.getId());
+                String token = tokenService.createToken(tempuser.getId());
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("token", token);
+                map.put("id", tempuser.getId());
+                return AjaxResult.success("登陆成功！", map);
             } else {
                 throw new CustomException(ErrorCode.USERNAME_OR_PASSWORD_ERROR, ErrorCode.USERNAME_OR_PASSWORD_ERROR_MSG);
             }
@@ -84,15 +94,15 @@ public class UserController {
         String TempCode = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (TempCode == null) {
-            return AjaxResult.error(ErrorCode.VERIFY_CODE_EXPIRED,ErrorCode.VERIFY_CODE_EXPIRED_MSG);
+            return AjaxResult.error(ErrorCode.VERIFY_CODE_EXPIRED, ErrorCode.VERIFY_CODE_EXPIRED_MSG);
         }
         if (!TempCode.equalsIgnoreCase(code)) {
-            return AjaxResult.error(ErrorCode.VERIFY_CODE_ERROR,ErrorCode.VERIFY_CODE_ERROR_MSG);
+            return AjaxResult.error(ErrorCode.VERIFY_CODE_ERROR, ErrorCode.VERIFY_CODE_ERROR_MSG);
         }
         // 校验用户名是否存在
         TempUser tempuser = tempuserService.getOne(new LambdaQueryWrapper<TempUser>().eq(TempUser::getName, user));
         if (tempuser != null) {
-            throw new CustomException(ErrorCode.USER_EXIST,ErrorCode.USER_EXIST_MSG);
+            throw new CustomException(ErrorCode.USER_EXIST, ErrorCode.USER_EXIST_MSG);
         }
         // 注册用户
         TempUser registerUser = new TempUser();
@@ -105,7 +115,7 @@ public class UserController {
         if (save) {
             return AjaxResult.success("注册成功！");
         } else {
-            throw new CustomException(ErrorCode.REGISTER_FAIL,ErrorCode.REGISTER_FAIL_MSG);
+            throw new CustomException(ErrorCode.REGISTER_FAIL, ErrorCode.REGISTER_FAIL_MSG);
         }
     }
 
@@ -116,7 +126,7 @@ public class UserController {
         if (update) {
             return AjaxResult.success("修改成功！");
         } else {
-            throw new CustomException(ErrorCode.UPDATE_FAIL,ErrorCode.UPDATE_FAIL_MSG);
+            throw new CustomException(ErrorCode.UPDATE_FAIL, ErrorCode.UPDATE_FAIL_MSG);
         }
     }
 }

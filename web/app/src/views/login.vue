@@ -2,12 +2,14 @@
 import {getInfo, login} from "@/api/login";
 import {useVerificationCode} from "@/hooks/UseVerificationCode";
 import {Ref} from "vue";
+import {setToken} from "@/utils/token";
 
 const router = useRouter();
 const Login = async () => {
   const loginDetail = await login(loginFrom.value)
   if (loginDetail.code === 200) {
-    GetInfo(loginDetail.data);
+    setToken(loginDetail.data.token)
+    GetInfo(loginDetail.data.id);
     await router.push({
       path: '/'
     })

@@ -3,6 +3,7 @@ import {ElNotification, ElMessage} from 'element-plus'
 import errorCode, {ErrorCode, NormalCode} from './errorCode'
 import {tansParams} from './param'
 import cache from './cache'
+import {getToken} from "@/utils/token";
 
 // axios.defaults.withCredentials = true;
 const service = axios.create({
@@ -11,7 +12,12 @@ const service = axios.create({
 })
 // request拦截器
 service.interceptors.request.use(config => {
+    // 是否需要设置 token
+    const isToken = (config.headers || {}).isToken === false
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
+    if (getToken() && !isToken) {
+        config.headers!['Authorization'] = 'Bearer ' + getToken()
+    }
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
         let url = config.url + '?' + tansParams(config.params);
@@ -52,7 +58,7 @@ service.interceptors.response.use(res => {
         // 未设置状态码则默认成功状态
         const code: ErrorCode | NormalCode = res.data.code || 200;
         // 获取错误信息
-        const msg: string = errorCode[code] || res.data.msg  || errorCode['default']
+        const msg: string = errorCode[code] || res.data.msg || errorCode['default']
         // 二进制数据则直接返回
         if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
             return res.data
