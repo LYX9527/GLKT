@@ -5,7 +5,7 @@ import {tansParams} from './param'
 import cache from './cache'
 import {getToken} from "@/utils/token";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 const service = axios.create({
     baseURL: "http://localhost:11001",
     timeout: 10000

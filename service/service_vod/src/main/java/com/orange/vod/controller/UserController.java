@@ -12,14 +12,22 @@ import com.orange.vod.domain.vo.LoginVo;
 import com.orange.vod.domain.vo.RegisterVo;
 import com.orange.vod.redis.RedisCache;
 import com.orange.vod.service.TempUserService;
-import com.orange.vod.service.impl.TokenService;
+import com.orange.vod.utils.JwtTokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @Package : com.orange.vod.controller
@@ -27,6 +35,7 @@ import java.util.HashMap;
  * @Date : 2022/7/2 6:47 PM
  * @Version : V1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("admin/vod/user")
 @Api(tags = "用户接口")
@@ -37,12 +46,22 @@ public class UserController {
     @Autowired
     TempUserService tempuserService;
 
-    @Autowired
-    TokenService tokenService;
+
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService jwtInMemoryUserDetailsService;
+
+    public UserController(AuthenticationManager authenticationManager,
+                          JwtTokenUtil jwtTokenUtil,
+                          UserDetailsService jwtInMemoryUserDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.jwtInMemoryUserDetailsService = jwtInMemoryUserDetailsService;
+    }
 
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody LoginVo loginVo) {
+    public AjaxResult login(@RequestBody LoginVo loginVo) throws Exception {
         String uuid = loginVo.getUuid();
         String user = loginVo.getUser();
         String password = loginVo.getPassword();
@@ -61,10 +80,13 @@ public class UserController {
             throw new CustomException(ErrorCode.USER_NOT_EXIST, ErrorCode.USER_NOT_EXIST_MSG);
         } else {
             if (Md5Utils.getMD5Str(password).equals(tempuser.getPassword())) {
-                String token = tokenService.createToken(tempuser.getId());
+                authenticate(user, password);
+                final UserDetails userDetails = jwtInMemoryUserDetailsService
+                        .loadUserByUsername(user);
+                final String token = jwtTokenUtil.generateToken(userDetails);
                 HashMap<String, Object> map = new HashMap<>();
-                map.put("token", token);
                 map.put("id", tempuser.getId());
+                map.put("token", token);
                 return AjaxResult.success("登陆成功！", map);
             } else {
                 throw new CustomException(ErrorCode.USERNAME_OR_PASSWORD_ERROR, ErrorCode.USERNAME_OR_PASSWORD_ERROR_MSG);
@@ -129,4 +151,23 @@ public class UserController {
             throw new CustomException(ErrorCode.UPDATE_FAIL, ErrorCode.UPDATE_FAIL_MSG);
         }
     }
+
+    /**
+     * 用户认证
+     * @param username 用户名
+     * @param password 密码
+     * @throws Exception
+     */
+    private void authenticate(String username, String password) throws Exception {
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(password);
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new CustomException(200000, "USER_DISABLED");
+        } catch (BadCredentialsException e) {
+            throw new CustomException(200000, "INVALID_CREDENTIALS");
+        }
+    }
+
 }
