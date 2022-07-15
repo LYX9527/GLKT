@@ -14,6 +14,7 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,23 +28,22 @@ import java.util.HashMap;
  * @Date : 2022/7/3 2:38 PM
  * @Version : V1.0
  */
+@Slf4j
 @Service
 public class UploadFileServiceImpl implements UploadFileService {
 
+
     @Override
     public HashMap<String, String> uploadFile(MultipartFile file) {
-         String secretId = ConstantReadYml.SECRET_ID;
-         String secretKey = ConstantReadYml.SECRET_KEY;
-        // String region = ConstantReadYml.REGION;
-        String regionStr = "ap-shanghai";
-        // String bucketName = ConstantReadYml.BUCKET_NAME;
-        String bucketName = "glkt-avatar-1252438937";
+        String secretId = ConstantReadYml.SECRET_ID;
+        String secretKey = ConstantReadYml.SECRET_KEY;
+        String regionStr = ConstantReadYml.REGION;
+        String bucketName = ConstantReadYml.BUCKET_NAME;
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
         Region region = new Region(regionStr);
         ClientConfig clientConfig = new ClientConfig(region);
         clientConfig.setHttpProtocol(HttpProtocol.https);
         COSClient cosClient = new COSClient(cred, clientConfig);
-
         try {
             InputStream inputStream = file.getInputStream();
             String filename = file.getOriginalFilename();
@@ -66,12 +66,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public void delFile(String key) {
-        String secretId = "AKIDHboT5WkoJchWJDxTlrjOqfIjbMxMXWHo";
-        String secretKey = "OaoprpcHm5D9tRlvxqZJsALJKEwSlz8B";
-        String region = "ap-shanghai";
-        String bucketName = "glkt-avatar-1252438937";
+        String secretId = ConstantReadYml.SECRET_ID;
+        String secretKey = ConstantReadYml.SECRET_KEY;
+        String regionStr = ConstantReadYml.REGION;
+        String bucketName = ConstantReadYml.BUCKET_NAME;
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
-        Region region1 = new Region(region);
+        Region region1 = new Region(regionStr);
         ClientConfig clientConfig = new ClientConfig(region1);
         clientConfig.setHttpProtocol(HttpProtocol.https);
         COSClient cosClient = new COSClient(cred, clientConfig);
