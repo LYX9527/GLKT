@@ -33,3 +33,11 @@ export const register = (data:IRegisterFrom) => {
         data
     })
 }
+
+export const delFile = (params:{key:string}) => {
+    return request({
+        url: 'admin/vod/upload/delfile',
+        method: 'get',
+        params
+    })
+}

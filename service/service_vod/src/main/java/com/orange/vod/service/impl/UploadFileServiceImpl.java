@@ -70,6 +70,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         String secretKey = ConstantReadYml.SECRET_KEY;
         String regionStr = ConstantReadYml.REGION;
         String bucketName = ConstantReadYml.BUCKET_NAME;
+        log.info("key:{}", key);
+        log.info("bucketName:{}", bucketName);
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
         Region region1 = new Region(regionStr);
         ClientConfig clientConfig = new ClientConfig(region1);

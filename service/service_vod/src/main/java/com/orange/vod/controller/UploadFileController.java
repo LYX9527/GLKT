@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Key;
 import java.util.HashMap;
 
 /**
@@ -31,7 +30,7 @@ public class UploadFileController {
     }
 
     @ApiOperation(value = "文件删除", notes = "文件删除")
-    @PostMapping ("/delfile")
+    @GetMapping  ("/delfile")
     public AjaxResult delFile(String key) {
         uploadFileService.delFile(key);
         return AjaxResult.success("删除成功！");
