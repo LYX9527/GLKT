@@ -80,7 +80,7 @@ public class UserController {
             throw new CustomException(ErrorCode.USER_NOT_EXIST, ErrorCode.USER_NOT_EXIST_MSG);
         } else {
             if (Md5Utils.getMD5Str(password).equals(tempuser.getPassword())) {
-                authenticate(user, password);
+//                authenticate(user, Md5Utils.getMD5Str(password));
                 final UserDetails userDetails = jwtInMemoryUserDetailsService
                         .loadUserByUsername(user);
                 final String token = jwtTokenUtil.generateToken(userDetails);
@@ -158,11 +158,13 @@ public class UserController {
      * @param password 密码
      * @throws Exception
      */
-    private void authenticate(String username, String password) throws Exception {
+    private void authenticate(String username, String password) {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+            log.info("token:{}", token);
+            authenticationManager.authenticate(token);
         } catch (DisabledException e) {
             throw new CustomException(200000, "USER_DISABLED");
         } catch (BadCredentialsException e) {

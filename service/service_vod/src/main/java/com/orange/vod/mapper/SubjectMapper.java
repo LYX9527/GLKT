@@ -1,7 +1,10 @@
 package com.orange.vod.mapper;
 
-import com.orange.ggkt.model.vod.Subject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.orange.ggkt.model.vod.Subject;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 
 /**
@@ -11,6 +14,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Entity com.orange.vod.domain.Subject
  */
 public interface SubjectMapper extends BaseMapper<Subject> {
+
+    int delById(@Param("id") Long id);
+
+    List<Subject> getById(@Param("id") Long id);
+
+
 
 }
 

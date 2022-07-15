@@ -5,18 +5,35 @@
 <mapper namespace="com.orange.vod.mapper.SubjectMapper">
 
     <resultMap id="BaseResultMap" type="com.orange.ggkt.model.vod.Subject">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
-            <result property="sort" column="sort" jdbcType="OTHER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+        <result property="sort" column="sort" jdbcType="OTHER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,parent_id,
+        id
+        ,title,parent_id,
         sort,create_time,update_time,
         is_deleted
     </sql>
+    <delete id="delById">
+        delete
+        from subject
+        <if test="id!=null">
+            where id = #{id,jdbcType=NUMERIC}
+        </if>
+    </delete>
+
+    <select id="getById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from subject
+        <if test="id!=null">
+            where id = #{id,jdbcType=NUMERIC}
+        </if>
+    </select>
 </mapper>
