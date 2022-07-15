@@ -46,4 +46,7 @@ public class VideoVisitor extends BaseEntity {
 	@TableField("duration")
 	private Long duration;
 
+	@ApiModelProperty(value = "视频名称")
+	@TableField(exist = false)
+	private String videoName;
 }

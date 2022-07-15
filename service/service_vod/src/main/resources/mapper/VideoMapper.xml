@@ -22,7 +22,6 @@
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
-
     <sql id="Base_Column_List">
         id
         ,course_id,chapter_id,
@@ -32,4 +31,11 @@
         status,create_time,update_time,
         is_deleted
     </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from video
+        where is_deleted = 0
+    </select>
 </mapper>
