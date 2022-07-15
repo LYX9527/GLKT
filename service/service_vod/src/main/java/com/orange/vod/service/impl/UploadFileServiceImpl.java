@@ -4,6 +4,7 @@ import com.orange.errorcode.ErrorCode;
 import com.orange.exception.CustomException;
 import com.orange.idUtils.UUID;
 import com.orange.vod.service.UploadFileService;
+import com.orange.vod.utils.ConstantReadYml;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -31,10 +32,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public HashMap<String, String> uploadFile(MultipartFile file) {
-        // String secretId = ConstantReadYml.SECRET_ID;
-        String secretId = "AKIDHboT5WkoJchWJDxTlrjOqfIjbMxMXWHo";
-        // String secretKey = ConstantReadYml.SECRET_KEY;
-        String secretKey = "OaoprpcHm5D9tRlvxqZJsALJKEwSlz8B";
+         String secretId = ConstantReadYml.SECRET_ID;
+         String secretKey = ConstantReadYml.SECRET_KEY;
         // String region = ConstantReadYml.REGION;
         String regionStr = "ap-shanghai";
         // String bucketName = ConstantReadYml.BUCKET_NAME;
