@@ -1,8 +1,9 @@
 package com.orange.vod.service.impl;
 
+import com.orange.errorcode.ErrorCode;
+import com.orange.exception.CustomException;
 import com.orange.idUtils.UUID;
 import com.orange.vod.service.UploadFileService;
-import com.orange.vod.utils.ConstantReadYml;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -16,7 +17,6 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -30,17 +30,15 @@ import java.util.HashMap;
 public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
-    public HashMap<String,String> uploadFile(MultipartFile file) {
-//        String secretId = ConstantReadYml.SECRET_ID;
-        String secretId = "xxxxxxxxxxxxxxxxxx";
-//        String secretKey = ConstantReadYml.SECRET_KEY;
-        String secretKey = "xxxxxxxxxxxxxxxxxx";
-//        String region = ConstantReadYml.REGION;
-        String regionStr = "xxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx";
-//        String bucketName = ConstantReadYml.BUCKET_NAME;
-        String bucketName = "xxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx";
-        System.out.println("secretId:" + secretId);
-        System.out.println("secretKey:" + secretKey);
+    public HashMap<String, String> uploadFile(MultipartFile file) {
+        // String secretId = ConstantReadYml.SECRET_ID;
+        String secretId = "AKIDHboT5WkoJchWJDxTlrjOqfIjbMxMXWHo";
+        // String secretKey = ConstantReadYml.SECRET_KEY;
+        String secretKey = "OaoprpcHm5D9tRlvxqZJsALJKEwSlz8B";
+        // String region = ConstantReadYml.REGION;
+        String regionStr = "ap-shanghai";
+        // String bucketName = ConstantReadYml.BUCKET_NAME;
+        String bucketName = "glkt-avatar-1252438937";
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
         Region region = new Region(regionStr);
         ClientConfig clientConfig = new ClientConfig(region);
@@ -60,18 +58,17 @@ public class UploadFileServiceImpl implements UploadFileService {
             cosClient.shutdown();
             HashMap<String, String> resultMap = new HashMap<>();
             resultMap.put("imgUrl", url);
-            resultMap.put("Key",path);
+            resultMap.put("Key", path);
             return resultMap;
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new CustomException(ErrorCode.UPLOAD_FILE_FAIL, ErrorCode.UPLOAD_FILE_FAIL_MSG);
         }
     }
 
     @Override
     public void delFile(String key) {
-        String secretId = "AKIDtb6PULxKTM1SghYEmG1by7ey2sTWO3p6";
-        String secretKey = "ITZZYUQJ4c092RddOuFOJ1lOo24A8sPO";
+        String secretId = "AKIDHboT5WkoJchWJDxTlrjOqfIjbMxMXWHo";
+        String secretKey = "OaoprpcHm5D9tRlvxqZJsALJKEwSlz8B";
         String region = "ap-shanghai";
         String bucketName = "glkt-avatar-1252438937";
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
